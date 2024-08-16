@@ -20,15 +20,3 @@ To get started, you need a recent version Python 3 and a few libraries.
 `pip install zipfile openpyxl` 
 
 Simply clone this repository or download it in a zip. `main.py` will contain some general instructions on how to get started with the tool. 
-
----
-
-
-### Known Issues
-
-- Only works up to 10 slides long. This is a simple for loop indexing issue. Shouldn't take too long to fix. 
-
-
-### Feature Requests
-
-- External translation API - relatively easy. I currently don't need this feature so feel free to clone it, or submit a request.
