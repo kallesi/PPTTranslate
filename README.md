@@ -44,3 +44,6 @@ Make necessary adjustments. The `Translate.xlsx` will be in the same directory a
 
 Your translated text will be merged into a new pptx file. 
 
+=======
+Simply clone this repository or download it in a zip. `main.py` will contain some general instructions on how to get started with the tool. 
+>>>>>>> d109624ef9b3306b95f8cd4b4cb9c7f974a7d25e
