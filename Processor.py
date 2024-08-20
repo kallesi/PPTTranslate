@@ -3,6 +3,8 @@ import xml.etree.ElementTree as ET
 import openpyxl
 import os
 from enum import Enum
+from playwright.sync_api import sync_playwright
+from constants import *
 
 class Paths(Enum):
   FILE = 0
@@ -17,7 +19,7 @@ class Processor:
     self._xl_path = ""
     self._out_path = ""
 
-  def use_path(self, file_path: str):
+  def set_path(self, file_path: str):
     self._file_path = file_path
     self._folder_path = os.path.dirname(file_path)
     self._xl_path = self._folder_path + r"\Translate.xlsx"
@@ -56,6 +58,37 @@ class Processor:
         ws.append([elem.text])
       wb.save(self._xl_path)
     z.close()
+    return self
+
+  def google_translate(self, source_lang: str = "en", to_lang: str = "zh-CN", css_selector: str = ".ryNqvb",
+                       chrome_path: str = CHROME_PATH) -> None:
+    """ Translates an excel column into another language using playwright
+    :param css_selector: CSS className for the translation results in case Google updates its website structure
+    :param chrome_path: Path to your local Chrome installation
+    """
+    file_path = self._xl_path
+    wb = openpyxl.load_workbook(file_path)
+    sheet = wb.active
+    result = ""
+    for row in sheet.iter_rows(min_col=1, max_col=1):
+      result += str(row[0].value) + "\n"
+    with sync_playwright() as p:
+      browser = p.chromium.launch(headless=True, executable_path=chrome_path)
+      page = browser.new_page()
+      page.goto(f"https://translate.google.com/?sl={source_lang}&tl={to_lang}&op=translate")
+      textarea = page.wait_for_selector("//textarea")
+      textarea.fill(result)
+      page.wait_for_selector(css_selector)
+      spans = page.query_selector_all(css_selector)
+      translation = ""
+      for span in spans:
+        translation += span.inner_text()
+      browser.close()
+      rows = translation.split("\n")
+      for i, row in enumerate(rows, start=1):
+        sheet.cell(row=i, column=2, value=row)
+      wb.save(file_path)
+
     
   def replace_text(self):
     zin = zipfile.ZipFile(self._file_path, "r")
@@ -85,3 +118,4 @@ class Processor:
     zin.close()
     zout.close()
       
+

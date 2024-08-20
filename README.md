@@ -17,18 +17,30 @@ Also, this hasn't been tested on Mac/Linux although I don't see why it wouldn't 
 
 To get started, you need a recent version Python 3 and a few libraries. 
 
-`pip install zipfile openpyxl` 
+`pip install zipfile openpyxl`
 
-Simply clone this repository or download it in a zip. `main.py` will contain some general instructions on how to get started with the tool. 
+To get Google Translate functionality:
 
----
+`pip install playwright`
 
+This implementation doesn't require binaries, but does require a chrome version. You can specify your chrome version in `constants.py`. I use Brave browser, but it should work with any chromium based browser. 
 
-### Known Issues
+Simply clone this repository or download it in a zip. 
+Run `main.py --help` to get started. 
 
-- Only works up to 10 slides long. This is a simple for loop indexing issue. Shouldn't take too long to fix. 
+# Example Use
 
+I want to translate a powerpoint file to Japanese:
 
-### Feature Requests
+`cd {project directory}`
 
-- External translation API - relatively easy. I currently don't need this feature so feel free to clone it, or submit a request.
+Extract the text into `Translate.xlsx` - then auto translate via Google Translate.
+
+`main.py extract {pptx path} --auto --source en --to ja`
+
+Make necessary adjustments. The `Translate.xlsx` will be in the same directory as your original powerpoint. 
+
+`main.py merge {pptx path}`
+
+Your translated text will be merged into a new pptx file. 
+
